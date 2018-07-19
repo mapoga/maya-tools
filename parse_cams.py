@@ -15,10 +15,8 @@ def _lookup_pos(string):
 
     matchObj = re.findall(pattern, string)
     if matchObj:
-        return {'x': matchObj[0],
-                'y': matchObj[1],
-                'z': matchObj[2]
-                }
+        m = matchObj[0:3]
+        return [float(i) for i in m]
     return
 
 
@@ -27,10 +25,8 @@ def _lookup_rot(string):
 
     matchObj = re.findall(pattern, string)
     if matchObj:
-        return {'x': matchObj[3],
-                'y': matchObj[4],
-                'z': matchObj[5]
-                }
+        m = matchObj[3:6]
+        return [float(i) for i in m]
     return
 
 
@@ -45,13 +41,9 @@ def cams(filepath):
 
     cameras = []
     camera_default = {'filename': '',
-                      'pos': {'x': 0,
-                              'y': 0,
-                              'z': 0},
-                      'rot': {'x': 0,
-                              'y': 0,
-                              'z': 0}
-                      }
+              'pos': [],
+              'rot': []
+              }
 
     # Lines loop
     for idx, line in enumerate(file_):
@@ -78,3 +70,17 @@ def cams(filepath):
     file_.close()
 
     return cameras
+
+"""
+import maya.cmds as cmds
+import os
+
+c = cams(r'Z:\TMP\dump\antoine-haireyesopen.txt')
+dir = 'wrong'
+for i in c:
+    print i['filename']
+    print i['pos']
+    print i['rot']
+    cameraName = cmds.camera(name = i['filename'], position = i['pos'], rotation = i['rot'], focalLength = 24, horizontalFilmAperture = 1.5, verticalFilmAperture = 1)
+    ip = cmds.imagePlane(camera = cameraName[0], fileName = os.path.join(dir, i['filename']), showInAllViews = False)
+"""
